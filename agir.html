@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agir pour l'océan</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #001f3f, #00557a);
+      color: white;
+      text-align: center;
+    }
+    header {
+      background-color: #001f3f;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    h2 {
+      font-weight: 300;
+      font-size: 20px;
+      margin-top: 20px;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .tab-button {
+      background: #0077b6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .tab-button.active,
+    .tab-button:hover {
+      background: #0096c7;
+      transform: scale(1.05);
+    }
+    .tab-content {
+      display: none;
+      max-width: 900px;
+      margin: 30px auto;
+      text-align: left;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeInCard 0.8s ease forwards;
+    }
+    @keyframes fadeInCard {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .tab-content.active {
+      display: block;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+    footer {
+      margin-top: 60px;
+      padding: 15px;
+      background-color: #001f3f;
+      color: #ccc;
+      font-size: 14px;
+    }
+    @media screen and (max-width: 768px) {
+      .tab-content {
+        margin: 20px;
+        font-size: 16px;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav {
+        margin-top: 10px;
+      }
+      nav a {
+        display: block;
+        margin: 5px 0;
+      }
+    }
+    @media screen and (min-width: 1400px) {
+      header h1 {
+        font-size: 30px;
+      }
+      .tab-button {
+        font-size: 18px;
+        padding: 14px 28px;
+      }
+      .tab-content {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Agir pour l'océan</h1>
+    <nav>
+      <a href="index.html">🏠 Accueil</a>
+      <a href="jeu.html">🎮 Jeu</a>
+      <a href="quizz.html">🧠 Quiz</a>
+      <a href="cartes.html">🎴 Cartes</a>
+    </nav>
+  </header>
+
+  <h2>Comment chacun peut protéger l’océan au quotidien ?</h2>
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab('maison')">🏠 Maison</button>
+    <button class="tab-button" onclick="showTab('consommation')">🛍️ Consommation</button>
+    <button class="tab-button" onclick="showTab('mobilite')">🚲 Mobilité</button>
+    <button class="tab-button" onclick="showTab('engagement')">📢 Engagement</button>
+  </div>
+
+  <div id="maison" class="tab-content active">
+    <ul>
+      <li>Éviter les produits avec microplastiques (cosmétiques, gommages...)</li>
+      <li>Trier les déchets plastiques, cartons et métaux</li>
+      <li>Réduire l’usage de l’eau (toilettes, vaisselle, lessive)</li>
+      <li>Ne rien jeter dans les canalisations ou les toilettes</li>
+    </ul>
+  </div>
+
+  <div id="consommation" class="tab-content">
+    <ul>
+      <li>Privilégier les aliments sans suremballage</li>
+      <li>Utiliser des sacs réutilisables</li>
+      <li>Choisir des produits écoconçus et recyclables</li>
+      <li>Consommer du poisson issu de la pêche durable (labels MSC...)</li>
+    </ul>
+  </div>
+
+  <div id="mobilite" class="tab-content">
+    <ul>
+      <li>Marcher, faire du vélo ou utiliser les transports en commun</li>
+      <li>Limiter les vols court-courriers</li>
+      <li>Favoriser les déplacements doux pour les trajets quotidiens</li>
+    </ul>
+  </div>
+
+  <div id="engagement" class="tab-content">
+    <ul>
+      <li>Participer à des collectes de déchets</li>
+      <li>Suivre ou soutenir des associations environnementales</li>
+      <li>Parler des enjeux climatiques autour de soi</li>
+      <li>Partager ce site à ton entourage !</li>
+    </ul>
+  </div>
+
+  <footer>
+    Réalisé par Guillaume Donizetti – Hackathon IA 2025
+  </footer>
+
+  <script>
+    function showTab(id) {
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>
