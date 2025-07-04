@@ -7,32 +7,50 @@
   <style>
     body {
       margin: 0;
-      font-family: sans-serif;
-      overflow: hidden;
-      background: #87cefa;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #001f3f, #00557a);
+      color: white;
+      overflow-x: hidden;
     }
-    h1 {
-      text-align: center;
-      font-size: 24px;
-      margin: 10px 0;
+    header {
+      background-color: #001f3f;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
     }
     #instructions {
       text-align: center;
       font-size: 16px;
-      margin-bottom: 5px;
+      margin: 10px 0;
     }
     #hud {
-      position: absolute;
-      top: 10px;
+      position: fixed;
+      top: 80px;
       left: 10px;
       background: rgba(255, 255, 255, 0.7);
       padding: 8px 12px;
       border-radius: 8px;
+      color: black;
       font-weight: bold;
+      z-index: 5;
     }
     #overlay {
       display: none;
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
@@ -62,11 +80,19 @@
       margin: 0 auto;
       background: #fff8dc;
       border: 3px solid #2e8b57;
+      margin-top: 20px;
     }
   </style>
 </head>
-<body>
-<h1>Tortue vs Plastique</h1>
+<body onload="window.focus()">
+<header>
+  <h1>Tortue vs Plastique</h1>
+  <nav>
+    <a href="index.html">🏠 Accueil</a>
+    <a href="quizz.html">🧠 Quiz</a>
+    <a href="cartes.html">🎴 Cartes</a>
+  </nav>
+</header>
 <div id="instructions">Appuie sur ↑ ou ↓ pour déplacer la tortue et éviter les déchets</div>
 <div id="hud">Distance : <span id="score">0</span> m</div>
 <div id="overlay">
@@ -128,22 +154,18 @@ function resetGame() {
   overlay.style.display = "none";
   bgMusic.currentTime = 0;
   bgMusic.play();
-  draw();
+  requestAnimationFrame(draw);
 }
 
-const assets = [tortueImg, sacImg, canetteImg, bouteilleImg, oeufsImg, sableImg];
-let assetsLoaded = 0;
-assets.forEach(img => img.onload = () => {
-  assetsLoaded++;
-  if (assetsLoaded === assets.length) draw();
-});
-
 document.addEventListener("keydown", e => {
-  if (e.code === "ArrowUp") { tortue.dy = -4; swimSound.play(); }
-  if (e.code === "ArrowDown") { tortue.dy = 4; swimSound.play(); }
+  if (e.code === "ArrowUp") { tortue.dy = -4; swimSound.play(); e.preventDefault(); }
+  if (e.code === "ArrowDown") { tortue.dy = 4; swimSound.play(); e.preventDefault(); }
 });
 document.addEventListener("keyup", e => {
-  if (e.code === "ArrowUp" || e.code === "ArrowDown") tortue.dy = 0;
+  if (e.code === "ArrowUp" || e.code === "ArrowDown") {
+    tortue.dy = 0;
+    e.preventDefault();
+  }
 });
 
 function drawBackground() {
@@ -244,6 +266,15 @@ function draw() {
   frame++;
   requestAnimationFrame(draw);
 }
+
+const assets = [tortueImg, sacImg, canetteImg, bouteilleImg, oeufsImg, sableImg];
+let assetsLoaded = 0;
+assets.forEach(img => img.onload = () => {
+  assetsLoaded++;
+  if (assetsLoaded === assets.length) {
+    requestAnimationFrame(draw);
+  }
+});
 </script>
 </body>
 </html>
