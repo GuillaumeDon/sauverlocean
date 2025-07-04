@@ -24,7 +24,7 @@ La musique Tortue vs Plastique généré via l'IA Suno
 
 ## 🤝 Crédits
 
-J'ai réalisé ce projet dans le cadre d’un travail individuel étudiant, pour sensibiliser à la cause des océans à travers des outils numériques et l’intelligence artificielle.
+J'ai réalisé ce projet dans le cadre d’un travail individuel étudiant, pour sensibiliser à la cause des océans à travers des outils numériques et l’intelligence artificielle. J'ai pris beaucoup de plaisir à le faire, étant de base développeur web, je me suis bien amusé en essayant de faire de la vidéo ou un jeu vidéo.
 
 ---
 
