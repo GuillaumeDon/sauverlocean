@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tortue vs Plastique – version finale</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      overflow: hidden;
+      background: #87cefa;
+    }
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      margin: 10px 0;
+    }
+    #instructions {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+    #hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    #overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    #overlay h2 {
+      margin-bottom: 20px;
+    }
+    #overlay button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background: #2e8b57;
+      color: white;
+      cursor: pointer;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: #fff8dc;
+      border: 3px solid #2e8b57;
+    }
+  </style>
+</head>
+<body>
+<h1>Tortue vs Plastique</h1>
+<div id="instructions">Appuie sur ↑ ou ↓ pour déplacer la tortue et éviter les déchets</div>
+<div id="hud">Distance : <span id="score">0</span> m</div>
+<div id="overlay">
+  <h2 id="overlayMessage"></h2>
+  <button onclick="resetGame()">Rejouer</button>
+</div>
+<canvas id="gameCanvas" width="600" height="400"></canvas>
+
+<audio id="winSound" src="assets/win.mp3"></audio>
+<audio id="loseSound" src="assets/lose.mp3"></audio>
+<audio id="swimSound" src="assets/swim.mp3"></audio>
+<audio id="bgMusic" src="assets/Tortue-vs-Plastique.mp3" autoplay loop></audio>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+const scoreDisplay = document.getElementById("score");
+const overlay = document.getElementById("overlay");
+const overlayMessage = document.getElementById("overlayMessage");
+
+const winSound = document.getElementById("winSound");
+const loseSound = document.getElementById("loseSound");
+const swimSound = document.getElementById("swimSound");
+const bgMusic = document.getElementById("bgMusic");
+
+bgMusic.volume = 0.5;
+
+const tortueImg = new Image(); tortueImg.src = "assets/tortue.png";
+const sacImg = new Image(); sacImg.src = "assets/sac.png";
+const canetteImg = new Image(); canetteImg.src = "assets/canette.png";
+const bouteilleImg = new Image(); bouteilleImg.src = "assets/bouteille.png";
+const oeufsImg = new Image(); oeufsImg.src = "assets/oeufs.png";
+const sableImg = new Image(); sableImg.src = "assets/sable.png";
+
+const tortue = {
+  x: 50,
+  y: 180,
+  width: 120,
+  height: 90,
+  dy: 0,
+  speed: 2,
+  hitboxOffset: 30
+};
+
+let scrollX = 0;
+let gameOver = false;
+let hasWon = false;
+let frame = 0;
+const levelLength = 6000;
+let plastiques = [];
+
+function resetGame() {
+  scrollX = 0;
+  gameOver = false;
+  hasWon = false;
+  frame = 0;
+  plastiques = [];
+  tortue.y = 180;
+  overlay.style.display = "none";
+  bgMusic.currentTime = 0;
+  bgMusic.play();
+  draw();
+}
+
+const assets = [tortueImg, sacImg, canetteImg, bouteilleImg, oeufsImg, sableImg];
+let assetsLoaded = 0;
+assets.forEach(img => img.onload = () => {
+  assetsLoaded++;
+  if (assetsLoaded === assets.length) draw();
+});
+
+document.addEventListener("keydown", e => {
+  if (e.code === "ArrowUp") { tortue.dy = -4; swimSound.play(); }
+  if (e.code === "ArrowDown") { tortue.dy = 4; swimSound.play(); }
+});
+document.addEventListener("keyup", e => {
+  if (e.code === "ArrowUp" || e.code === "ArrowDown") tortue.dy = 0;
+});
+
+function drawBackground() {
+  const patternWidth = sableImg.width;
+  const verticalOffset = canvas.height - sableImg.height;
+  for (let i = 0; i <= canvas.width / patternWidth + 1; i++) {
+    ctx.drawImage(sableImg, (i * patternWidth) - (scrollX % patternWidth), verticalOffset);
+  }
+}
+
+function drawTortue() {
+  ctx.drawImage(tortueImg, tortue.x, tortue.y, tortue.width, tortue.height);
+}
+
+function drawPlastiques() {
+  plastiques.forEach(p => {
+    const px = p.x - scrollX;
+    let img = p.type === 'sac' ? sacImg : p.type === 'canette' ? canetteImg : bouteilleImg;
+    ctx.save();
+    ctx.translate(px + p.width/2, p.y + p.height/2);
+    ctx.rotate(p.angle);
+    ctx.drawImage(img, -p.width/2, -p.height/2, p.width, p.height);
+    ctx.restore();
+  });
+}
+
+function updatePlastiques() {
+  plastiques.forEach(p => p.angle += 0.05);
+  if (frame % 60 === 0) {
+    const types = ['sac', 'canette', 'bouteille'];
+    const type = types[Math.floor(Math.random() * types.length)];
+    plastiques.push({ x: scrollX + 600, y: Math.random() * 340, width: 40, height: 40, angle: 0, type });
+  }
+}
+
+function checkCollision() {
+  const turtleBox = {
+    x: tortue.x + tortue.hitboxOffset,
+    y: tortue.y + tortue.hitboxOffset,
+    width: tortue.width - 2 * tortue.hitboxOffset,
+    height: tortue.height - 2 * tortue.hitboxOffset
+  };
+  for (let p of plastiques) {
+    const px = p.x - scrollX;
+    if (turtleBox.x < px + p.width &&
+        turtleBox.x + turtleBox.width > px &&
+        turtleBox.y < p.y + p.height &&
+        turtleBox.y + turtleBox.height > p.y) {
+      loseSound.play();
+      bgMusic.pause();
+      showEndScreen("Game Over : tu as touché un déchet !");
+      gameOver = true;
+    }
+  }
+}
+
+function drawGoal() {
+  const goalX = levelLength - scrollX;
+  if (goalX >= 0 && goalX <= canvas.width) {
+    ctx.drawImage(oeufsImg, goalX - 50, 160, 40, 40);
+  }
+}
+
+function checkWin() {
+  if (!hasWon && scrollX + tortue.x + tortue.width >= levelLength) {
+    hasWon = true;
+    winSound.play();
+    bgMusic.pause();
+    showEndScreen("Bravo ! Tu as atteint les œufs !");
+  }
+}
+
+function updateScore() {
+  const metres = Math.min(levelLength, scrollX + tortue.x);
+  scoreDisplay.textContent = Math.floor(metres / 10);
+}
+
+function showEndScreen(message) {
+  overlayMessage.textContent = message;
+  overlay.style.display = "flex";
+}
+
+function draw() {
+  if (gameOver || hasWon) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBackground();
+  drawGoal();
+  drawTortue();
+  drawPlastiques();
+  updatePlastiques();
+  checkCollision();
+  checkWin();
+  updateScore();
+
+  tortue.y += tortue.dy;
+  tortue.y = Math.max(0, Math.min(canvas.height - tortue.height, tortue.y));
+  scrollX += tortue.speed;
+  frame++;
+  requestAnimationFrame(draw);
+}
+</script>
+</body>
+</html>
