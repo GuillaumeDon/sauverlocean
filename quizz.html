@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Océan & Pollution</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #ccecf6, #87cefa);
+      padding: 20px;
+      text-align: center;
+    }
+    #quiz-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      background-color: #2e8b57;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #256b45;
+    }
+    #result {
+      font-size: 20px;
+      margin-top: 20px;
+    }
+    #restart {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quiz : Protégeons l'océan !</h1>
+  <div id="quiz-box">
+    <div id="question"></div>
+    <button onclick="submitAnswer(true)">Oui</button>
+    <button onclick="submitAnswer(false)">Non</button>
+    <div id="result"></div>
+    <button id="restart" onclick="startQuiz()">Recommencer</button>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "Les tortues marines peuvent confondre les sacs plastiques avec des méduses.", a: true },
+      { q: "Le plastique met environ 5 ans à se dégrader dans l’océan.", a: false },
+      { q: "Le corail est un animal vivant menacé par le réchauffement climatique.", a: true },
+      { q: "Les océans produisent plus de 50 % de l’oxygène que nous respirons.", a: true },
+      { q: "Il est sans danger de jeter de petits déchets biodégradables à la mer.", a: false },
+      { q: "Les microplastiques peuvent être ingérés par les poissons et finir dans notre alimentation.", a: true },
+      { q: "Les filets de pêche abandonnés représentent une menace pour la faune marine.", a: true },
+      { q: "On trouve souvent plus de plastique que de poissons dans certaines zones marines.", a: true },
+      { q: "Les pailles en plastique sont l’un des déchets les plus retrouvés sur les plages.", a: true },
+      { q: "Recycler à terre ne change rien à la pollution en mer.", a: false }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    function startQuiz() {
+      current = 0;
+      score = 0;
+      document.getElementById("restart").style.display = "none";
+      document.getElementById("result").innerText = "";
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[current];
+      document.getElementById("question").innerText = `Question ${current + 1} : ${q.q}`;
+    }
+
+    function submitAnswer(answer) {
+      if (questions[current].a === answer) {
+        score++;
+      }
+      current++;
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        document.getElementById("question").innerText = "";
+        document.getElementById("result").innerText = `Tu as obtenu ${score} / ${questions.length} bonnes réponses.`;
+        document.getElementById("restart").style.display = "inline-block";
+      }
+    }
+
+    startQuiz();
+  </script>
+</body>
+</html>

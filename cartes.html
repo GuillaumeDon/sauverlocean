@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Cartes Océanes</title>
+  <style>
+    body {
+      background: #ccecf6;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .card {
+      width: 150px;
+      height: 150px;
+      background: #2e8b57;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      cursor: pointer;
+      perspective: 1000px;
+    }
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .card-front {
+      background: #2e8b57;
+    }
+    .card-back {
+      background: white;
+      color: black;
+      transform: rotateY(180deg);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<h1>Retourne une carte pour en apprendre plus sur l'océan</h1>
+<div class="grid" id="cardGrid"></div>
+
+<script>
+const data = [
+  "🐢 La tortue caouanne est en danger critique d’extinction.",
+  "🧴 Une bouteille plastique met 450 ans à se dégrader.",
+  "🌊 Ramasser 3 déchets sur la plage peut sauver 3 vies marines.",
+  "🐠 Les récifs coralliens abritent 25% de la vie marine.",
+  "🌍 8 millions de tonnes de plastique finissent dans l'océan chaque année.",
+  "❌ Le plastique ne disparaît jamais : il devient microplastique.",
+  "🪸 Les coraux blanchissent à cause du réchauffement des océans.",
+  "🦈 Les requins sont essentiels à l’équilibre des écosystèmes marins.",
+  "🚯 70% des déchets retrouvés en mer viennent de la terre.",
+  "🐬 Le bruit sous-marin perturbe les dauphins et baleines.",
+  "🔁 Recycler à terre aide à réduire la pollution marine.",
+  "🎣 Les filets de pêche abandonnés sont appelés filets fantômes."
+];
+
+const grid = document.getElementById("cardGrid");
+
+data.forEach((text, index) => {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const inner = document.createElement("div");
+  inner.className = "card-inner";
+
+  const front = document.createElement("div");
+  front.className = "card-front";
+  front.textContent = "🌊";
+
+  const back = document.createElement("div");
+  back.className = "card-back";
+  back.textContent = text;
+
+  inner.appendChild(front);
+  inner.appendChild(back);
+  card.appendChild(inner);
+
+  card.addEventListener("click", () => {
+    card.classList.toggle("flipped");
+  });
+
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>
