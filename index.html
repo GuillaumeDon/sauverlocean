@@ -12,6 +12,22 @@
       color: white;
       overflow-x: hidden;
     }
+    #intro-video {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #intro-video video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
     header {
       background-color: #001f3f;
       padding: 20px;
@@ -113,7 +129,6 @@
       50% { opacity: 1; }
       100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
     }
-
     @media screen and (max-width: 768px) {
       header {
         flex-direction: column;
@@ -131,7 +146,6 @@
         font-size: 18px;
       }
     }
-
     @media screen and (max-width: 480px) {
       header h1 {
         font-size: 18px;
@@ -142,39 +156,38 @@
       }
     }
     @media screen and (min-width: 1400px) {
-  .menu a {
-    font-size: 26px;
-    padding: 20px 50px;
-  }
-  header h1 {
-    font-size: 32px;
-  }
-  h2 {
-    font-size: 24px;
-  }
-}
-
+      .menu a {
+        font-size: 26px;
+        padding: 20px 50px;
+      }
+      header h1 {
+        font-size: 32px;
+      }
+      h2 {
+        font-size: 24px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div id="intro-video">
+    <video src="assets/intro.mp4" autoplay muted playsinline onended="hideVideo()"></video>
+  </div>
   <header>
     <h1>Protection de la biodiversité marine</h1>
     <nav>
-      
       <a href="jeu.html">🎮 Jeux</a>
       <a href="quizz.html">🧠 Quiz</a>
       <a href="cartes.html">🎴 Cartes</a>
       <a href="agir.html">🎴 Agir</a>
     </nav>
   </header>
-
   <h2>Chaque geste compte pour sauver l'océan</h2>
   <div class="menu">
     <a href="jeu.html">🎮 Jouer au mini-jeu</a>
     <a href="quizz.html">🧠 Faire le quiz</a>
     <a href="cartes.html">🎴 Explorer les cartes océanes</a>
   </div>
-
   <div class="bubbles">
     <span style="left: 10%; animation-delay: 0s;"></span>
     <span style="left: 25%; animation-delay: 2s;"></span>
@@ -183,9 +196,16 @@
     <span style="left: 75%; animation-delay: 3s;"></span>
     <span style="left: 90%; animation-delay: 5s;"></span>
   </div>
-
   <footer>
     Réalisé par Guillaume Donizetti – Hackathon IA 2025
   </footer>
+  <script>
+    function hideVideo() {
+      const intro = document.getElementById("intro-video");
+      intro.style.transition = "opacity 1s";
+      intro.style.opacity = "0";
+      setTimeout(() => intro.remove(), 1000);
+    }
+  </script>
 </body>
 </html>
