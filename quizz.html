@@ -3,16 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>Quiz Océan & Pollution</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom, #001f3f, #00557a);
       color: white;
       text-align: center;
-      position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
     }
+
     header {
       background-color: #001f3f;
       padding: 20px;
@@ -20,9 +25,8 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      position: relative;
-      z-index: 2;
     }
+
     header h1 {
       margin: 0;
       font-size: 24px;
@@ -31,25 +35,35 @@
       -webkit-text-fill-color: transparent;
       animation: shine 4s linear infinite;
     }
+
     @keyframes shine {
       0% { filter: brightness(1); }
       50% { filter: brightness(1.5); }
       100% { filter: brightness(1); }
     }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     nav a {
       color: white;
       text-decoration: none;
-      margin-left: 20px;
       font-weight: bold;
     }
+
     nav a:hover {
       text-decoration: underline;
     }
+
     h2 {
       font-weight: 300;
       font-size: 20px;
       margin-top: 0;
     }
+
     #quiz-box {
       background: white;
       color: black;
@@ -59,13 +73,13 @@
       margin: 40px auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
       animation: fadeInUp 1s ease-out forwards;
-      position: relative;
-      z-index: 2;
     }
+
     @keyframes fadeInUp {
       0% { opacity: 0; transform: translateY(20px); }
       100% { opacity: 1; transform: translateY(0); }
     }
+
     button {
       padding: 10px 20px;
       margin: 10px;
@@ -77,23 +91,29 @@
       cursor: pointer;
       transition: transform 0.2s ease;
     }
+
     button:hover {
       background-color: #256b45;
       transform: scale(1.05);
     }
+
     button.correct {
       background-color: #2ecc71 !important;
     }
+
     button.wrong {
       background-color: #e74c3c !important;
     }
+
     #result {
       font-size: 20px;
       margin-top: 20px;
     }
+
     #restart {
       display: none;
     }
+
     footer {
       margin-top: 60px;
       padding: 15px;
@@ -101,9 +121,8 @@
       color: #ccc;
       text-align: center;
       font-size: 14px;
-      position: relative;
-      z-index: 2;
     }
+
     .bubbles {
       position: fixed;
       bottom: 0;
@@ -114,6 +133,7 @@
       overflow: hidden;
       pointer-events: none;
     }
+
     .bubbles span {
       position: absolute;
       display: block;
@@ -124,10 +144,47 @@
       border-radius: 50%;
       animation: rise 10s infinite ease-in;
     }
+
     @keyframes rise {
       0% { transform: translateY(0) scale(0.5); opacity: 0; }
       50% { opacity: 1; }
       100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
+    }
+
+    /* 🌐 Responsive styles */
+    @media screen and (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      header h1 {
+        font-size: 20px;
+        text-align: left;
+        margin-bottom: 10px;
+      }
+
+      nav {
+        flex-direction: column;
+        gap: 5px;
+        width: 100%;
+      }
+
+      #quiz-box {
+        width: 90%;
+        padding: 20px;
+      }
+
+      button {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+        font-size: 16px;
+      }
+
+      #result {
+        font-size: 18px;
+      }
     }
   </style>
 </head>
