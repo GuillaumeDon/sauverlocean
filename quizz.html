@@ -10,6 +10,8 @@
       background: linear-gradient(to bottom, #001f3f, #00557a);
       color: white;
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
     header {
       background-color: #001f3f;
@@ -18,10 +20,21 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
     }
     header h1 {
       margin: 0;
       font-size: 24px;
+      background: linear-gradient(90deg, #00d4ff, #00ff95);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 4s linear infinite;
+    }
+    @keyframes shine {
+      0% { filter: brightness(1); }
+      50% { filter: brightness(1.5); }
+      100% { filter: brightness(1); }
     }
     nav a {
       color: white;
@@ -45,6 +58,13 @@
       max-width: 500px;
       margin: 40px auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      animation: fadeInUp 1s ease-out forwards;
+      position: relative;
+      z-index: 2;
+    }
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
     button {
       padding: 10px 20px;
@@ -55,9 +75,17 @@
       background-color: #2e8b57;
       color: white;
       cursor: pointer;
+      transition: transform 0.2s ease;
     }
     button:hover {
       background-color: #256b45;
+      transform: scale(1.05);
+    }
+    button.correct {
+      background-color: #2ecc71 !important;
+    }
+    button.wrong {
+      background-color: #e74c3c !important;
     }
     #result {
       font-size: 20px;
@@ -73,6 +101,33 @@
       color: #ccc;
       text-align: center;
       font-size: 14px;
+      position: relative;
+      z-index: 2;
+    }
+    .bubbles {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .bubbles span {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: rgba(255,255,255,0.1);
+      bottom: -50px;
+      border-radius: 50%;
+      animation: rise 10s infinite ease-in;
+    }
+    @keyframes rise {
+      0% { transform: translateY(0) scale(0.5); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
     }
   </style>
 </head>
@@ -88,10 +143,19 @@
 
   <div id="quiz-box">
     <div id="question"></div>
-    <button onclick="submitAnswer(true)">Oui</button>
-    <button onclick="submitAnswer(false)">Non</button>
+    <button id="btn-oui" onclick="submitAnswer(true)">Oui</button>
+    <button id="btn-non" onclick="submitAnswer(false)">Non</button>
     <div id="result"></div>
     <button id="restart" onclick="startQuiz()">Recommencer</button>
+  </div>
+
+  <div class="bubbles">
+    <span style="left: 10%; animation-delay: 0s;"></span>
+    <span style="left: 25%; animation-delay: 2s;"></span>
+    <span style="left: 40%; animation-delay: 4s;"></span>
+    <span style="left: 60%; animation-delay: 1s;"></span>
+    <span style="left: 75%; animation-delay: 3s;"></span>
+    <span style="left: 90%; animation-delay: 5s;"></span>
   </div>
 
   <footer>
@@ -120,6 +184,8 @@
       score = 0;
       document.getElementById("restart").style.display = "none";
       document.getElementById("result").innerText = "";
+      document.getElementById("btn-oui").disabled = false;
+      document.getElementById("btn-non").disabled = false;
       showQuestion();
     }
 
@@ -129,17 +195,35 @@
     }
 
     function submitAnswer(answer) {
-      if (questions[current].a === answer) {
+      const correct = questions[current].a === answer;
+      const ouiBtn = document.getElementById("btn-oui");
+      const nonBtn = document.getElementById("btn-non");
+
+      if (correct) {
+        (answer ? ouiBtn : nonBtn).classList.add("correct");
         score++;
-      }
-      current++;
-      if (current < questions.length) {
-        showQuestion();
       } else {
-        document.getElementById("question").innerText = "";
-        document.getElementById("result").innerText = `Tu as obtenu ${score} / ${questions.length} bonnes réponses.`;
-        document.getElementById("restart").style.display = "inline-block";
+        (answer ? ouiBtn : nonBtn).classList.add("wrong");
       }
+
+      ouiBtn.disabled = true;
+      nonBtn.disabled = true;
+
+      setTimeout(() => {
+        ouiBtn.classList.remove("correct", "wrong");
+        nonBtn.classList.remove("correct", "wrong");
+        ouiBtn.disabled = false;
+        nonBtn.disabled = false;
+
+        current++;
+        if (current < questions.length) {
+          showQuestion();
+        } else {
+          document.getElementById("question").innerText = "";
+          document.getElementById("result").innerText = `Tu as obtenu ${score} / ${questions.length} bonnes réponses.`;
+          document.getElementById("restart").style.display = "inline-block";
+        }
+      }, 800);
     }
 
     startQuiz();
