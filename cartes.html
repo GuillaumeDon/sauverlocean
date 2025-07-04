@@ -5,20 +5,44 @@
   <title>Cartes Océanes</title>
   <style>
     body {
-      background: #ccecf6;
-      font-family: sans-serif;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #001f3f, #00557a);
+      color: white;
       text-align: center;
-      padding: 20px;
     }
-    h1 {
-      margin-bottom: 10px;
+    header {
+      background-color: #001f3f;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    h2 {
+      font-weight: 300;
+      font-size: 20px;
+      margin-top: 0;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 15px;
       max-width: 800px;
-      margin: 0 auto;
+      margin: 40px auto;
     }
     .card {
       width: 150px;
@@ -63,55 +87,76 @@
       transform: rotateY(180deg);
       font-size: 14px;
     }
+    footer {
+      margin-top: 60px;
+      padding: 15px;
+      background-color: #001f3f;
+      color: #ccc;
+      text-align: center;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
-<h1>Retourne une carte pour en apprendre plus sur l'océan</h1>
-<div class="grid" id="cardGrid"></div>
+  <header>
+    <h1>Explorer les cartes océanes</h1>
+    <nav>
+      <a href="index.html">🏠 Accueil</a>
+      <a href="jeu.html">🎮 Jeu</a>
+      <a href="quizz.html">🧠 Quiz</a>
+    </nav>
+  </header>
 
-<script>
-const data = [
-  "🐢 La tortue caouanne est en danger critique d’extinction.",
-  "🧴 Une bouteille plastique met 450 ans à se dégrader.",
-  "🌊 Ramasser 3 déchets sur la plage peut sauver 3 vies marines.",
-  "🐠 Les récifs coralliens abritent 25% de la vie marine.",
-  "🌍 8 millions de tonnes de plastique finissent dans l'océan chaque année.",
-  "❌ Le plastique ne disparaît jamais : il devient microplastique.",
-  "🪸 Les coraux blanchissent à cause du réchauffement des océans.",
-  "🦈 Les requins sont essentiels à l’équilibre des écosystèmes marins.",
-  "🚯 70% des déchets retrouvés en mer viennent de la terre.",
-  "🐬 Le bruit sous-marin perturbe les dauphins et baleines.",
-  "🔁 Recycler à terre aide à réduire la pollution marine.",
-  "🎣 Les filets de pêche abandonnés sont appelés filets fantômes."
-];
+  <h2>Retourne une carte pour en apprendre plus sur l'océan</h2>
+  <div class="grid" id="cardGrid"></div>
 
-const grid = document.getElementById("cardGrid");
+  <footer>
+    Réalisé par Guillaume Donizetti – Hackathon IA 2025
+  </footer>
 
-data.forEach((text, index) => {
-  const card = document.createElement("div");
-  card.className = "card";
+  <script>
+    const data = [
+      "🐢 La tortue caouanne est en danger critique d’extinction.",
+      "🧴 Une bouteille plastique met 450 ans à se dégrader.",
+      "🌊 Ramasser 3 déchets sur la plage peut sauver 3 vies marines.",
+      "🐠 Les récifs coralliens abritent 25% de la vie marine.",
+      "🌍 8 millions de tonnes de plastique finissent dans l'océan chaque année.",
+      "❌ Le plastique ne disparaît jamais : il devient microplastique.",
+      "🪸 Les coraux blanchissent à cause du réchauffement des océans.",
+      "🦈 Les requins sont essentiels à l’équilibre des écosystèmes marins.",
+      "🚯 70% des déchets retrouvés en mer viennent de la terre.",
+      "🐬 Le bruit sous-marin perturbe les dauphins et baleines.",
+      "🔁 Recycler à terre aide à réduire la pollution marine.",
+      "🎣 Les filets de pêche abandonnés sont appelés filets fantômes."
+    ];
 
-  const inner = document.createElement("div");
-  inner.className = "card-inner";
+    const grid = document.getElementById("cardGrid");
 
-  const front = document.createElement("div");
-  front.className = "card-front";
-  front.textContent = "🌊";
+    data.forEach((text, index) => {
+      const card = document.createElement("div");
+      card.className = "card";
 
-  const back = document.createElement("div");
-  back.className = "card-back";
-  back.textContent = text;
+      const inner = document.createElement("div");
+      inner.className = "card-inner";
 
-  inner.appendChild(front);
-  inner.appendChild(back);
-  card.appendChild(inner);
+      const front = document.createElement("div");
+      front.className = "card-front";
+      front.textContent = "🌊";
 
-  card.addEventListener("click", () => {
-    card.classList.toggle("flipped");
-  });
+      const back = document.createElement("div");
+      back.className = "card-back";
+      back.textContent = text;
 
-  grid.appendChild(card);
-});
-</script>
+      inner.appendChild(front);
+      inner.appendChild(back);
+      card.appendChild(inner);
+
+      card.addEventListener("click", () => {
+        card.classList.toggle("flipped");
+      });
+
+      grid.appendChild(card);
+    });
+  </script>
 </body>
 </html>
