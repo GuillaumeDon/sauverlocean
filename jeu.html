@@ -3,12 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Tortue Heavy Metal vs Dirty Plastique – version responsive</title>
+  <title>Tortue Heavy Metal vs Dirty Plastique – version modifiée</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -17,7 +14,6 @@
       overflow-x: hidden;
       text-align: center;
     }
-
     header {
       background-color: #001f3f;
       padding: 20px;
@@ -26,28 +22,15 @@
       justify-content: space-between;
       align-items: center;
     }
-
-    header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-
+    header h1 { margin: 0; font-size: 1.5rem; }
     nav a {
       color: white;
       text-decoration: none;
       margin-left: 20px;
       font-weight: bold;
     }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    #instructions {
-      font-size: 16px;
-      margin: 10px 0;
-    }
-
+    nav a:hover { text-decoration: underline; }
+    #instructions { font-size: 16px; margin: 10px 0; }
     #hud {
       position: fixed;
       top: 70px;
@@ -60,8 +43,8 @@
       z-index: 5;
     }
 
+    /* ✅ Overlay non bloquant */
     #overlay {
-      display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
@@ -72,12 +55,13 @@
       justify-content: center;
       align-items: center;
       z-index: 10;
+      pointer-events: none; /* n'intercepte pas les clics */
+    }
+    #overlay * {
+      pointer-events: auto; /* sauf pour les éléments internes */
     }
 
-    #overlay h2 {
-      margin-bottom: 20px;
-    }
-
+    #overlay h2 { margin-bottom: 20px; }
     #overlay button {
       padding: 10px 20px;
       font-size: 16px;
@@ -96,13 +80,11 @@
       max-width: 95vw;
       height: auto;
     }
-
     #touchControls {
       display: none;
       margin-top: 10px;
       gap: 10px;
     }
-
     #touchControls button {
       padding: 15px 25px;
       font-size: 20px;
@@ -112,16 +94,12 @@
       border-radius: 10px;
       cursor: pointer;
     }
-
     @media (max-width: 768px) {
-      #touchControls {
-        display: flex;
-        justify-content: center;
-      }
+      #touchControls { display: flex; justify-content: center; }
     }
   </style>
 </head>
-<body onload="window.focus()">
+<body>
 
 <header>
   <h1>Tortue Heavy Metal vs Dirty Plastique</h1>
@@ -130,20 +108,20 @@
     <a href="quizz.html">🧠 Quiz</a>
     <a href="cartes.html">🎴 Cartes</a>
     <a href="agir.html">🎴 Agir</a>
-
   </nav>
 </header>
 
 <div id="instructions">Utilise ↑ ou ↓ pour déplacer la tortue ou utilise les boutons ci-dessous</div>
 <div id="hud">Distance : <span id="score">0</span> m</div>
+<button onclick="toggleMusic()" style="margin-top:10px;">🔇 Couper la musique</button>
+
+<!-- ✅ Overlay de démarrage -->
 <div id="overlay">
-  <h2 id="overlayMessage"></h2>
-  <button onclick="resetGame()">Rejouer</button>
+  <h2 id="overlayMessage">Prêt à jouer ?</h2>
+  <button id="startButton" onclick="startGame()">Jouer</button>
 </div>
 
 <canvas id="gameCanvas" width="600" height="400"></canvas>
-
-<!-- Contrôles tactiles -->
 <div id="touchControls">
   <button onclick="startMove('up')">⬆️</button>
   <button onclick="startMove('down')">⬇️</button>
@@ -152,7 +130,7 @@
 <audio id="winSound" src="assets/win.mp3"></audio>
 <audio id="loseSound" src="assets/lose.mp3"></audio>
 <audio id="swimSound" src="assets/swim.mp3"></audio>
-<audio id="bgMusic" src="assets/Tortue-vs-Plastique.mp3" autoplay loop></audio>
+<audio id="bgMusic" src="assets/Tortue-vs-Plastique.mp3" loop></audio>
 
 <script>
 const canvas = document.getElementById("gameCanvas");
@@ -160,12 +138,10 @@ const ctx = canvas.getContext("2d");
 const scoreDisplay = document.getElementById("score");
 const overlay = document.getElementById("overlay");
 const overlayMessage = document.getElementById("overlayMessage");
-
 const winSound = document.getElementById("winSound");
 const loseSound = document.getElementById("loseSound");
 const swimSound = document.getElementById("swimSound");
 const bgMusic = document.getElementById("bgMusic");
-
 bgMusic.volume = 0.5;
 
 const tortueImg = new Image(); tortueImg.src = "assets/tortue.png";
@@ -187,22 +163,58 @@ const tortue = {
 
 let scrollX = 0;
 let gameOver = false;
-let hasWon = false;
+let gameStarted = false;
 let frame = 0;
+let score = 0;
+let oeufsRecoltes = 0;
 const levelLength = 6000;
 let plastiques = [];
+let oeufs = [
+  { x: 1000, y: 160, width: 40, height: 40 },
+  { x: 2000, y: 120, width: 40, height: 40 },
+  { x: 3000, y: 200, width: 40, height: 40 },
+  { x: 4000, y: 150, width: 40, height: 40 },
+  { x: 5000, y: 180, width: 40, height: 40 }
+];
+
+function toggleMusic() {
+  if (bgMusic.paused) {
+    bgMusic.play();
+  } else {
+    bgMusic.pause();
+  }
+}
+
+function startGame() {
+  if (!gameStarted) {
+    overlay.style.display = "none";
+    bgMusic.currentTime = 0;
+    bgMusic.play();
+    gameStarted = true;
+    requestAnimationFrame(draw);
+  }
+}
 
 function resetGame() {
   scrollX = 0;
   gameOver = false;
-  hasWon = false;
   frame = 0;
+  score = 0;
+  oeufsRecoltes = 0;
   plastiques = [];
   tortue.y = 180;
-  overlay.style.display = "none";
-  bgMusic.currentTime = 0;
-  bgMusic.play();
-  requestAnimationFrame(draw);
+  oeufs = [
+    { x: 1000, y: 160, width: 40, height: 40 },
+    { x: 2000, y: 120, width: 40, height: 40 },
+    { x: 3000, y: 200, width: 40, height: 40 },
+    { x: 4000, y: 150, width: 40, height: 40 },
+    { x: 5000, y: 180, width: 40, height: 40 }
+  ];
+  scoreDisplay.textContent = 0;
+  overlayMessage.textContent = "Rejouer ?";
+  const startBtn = document.getElementById("startButton");
+  if (startBtn) startBtn.textContent = "Rejouer";
+  overlay.style.display = "flex";
 }
 
 document.addEventListener("keydown", e => {
@@ -215,8 +227,6 @@ document.addEventListener("keyup", e => {
     e.preventDefault();
   }
 });
-
-// Contrôles tactiles (précis)
 function startMove(dir) {
   tortue.dy = dir === "up" ? -2 : 2;
   swimSound.play();
@@ -230,11 +240,9 @@ function drawBackground() {
     ctx.drawImage(sableImg, (i * patternWidth) - (scrollX % patternWidth), verticalOffset);
   }
 }
-
 function drawTortue() {
   ctx.drawImage(tortueImg, tortue.x, tortue.y, tortue.width, tortue.height);
 }
-
 function drawPlastiques() {
   plastiques.forEach(p => {
     const px = p.x - scrollX;
@@ -246,7 +254,6 @@ function drawPlastiques() {
     ctx.restore();
   });
 }
-
 function updatePlastiques() {
   plastiques.forEach(p => p.angle += 0.05);
   if (frame % 60 === 0) {
@@ -255,7 +262,6 @@ function updatePlastiques() {
     plastiques.push({ x: scrollX + 600, y: Math.random() * 340, width: 40, height: 40, angle: 0, type });
   }
 }
-
 function checkCollision() {
   const turtleBox = {
     x: tortue.x + tortue.hitboxOffset,
@@ -265,64 +271,63 @@ function checkCollision() {
   };
   for (let p of plastiques) {
     const px = p.x - scrollX;
-    if (turtleBox.x < px + p.width &&
-      turtleBox.x + turtleBox.width > px &&
-      turtleBox.y < p.y + p.height &&
-      turtleBox.y + turtleBox.height > p.y) {
+    if (turtleBox.x < px + p.width && turtleBox.x + turtleBox.width > px && turtleBox.y < p.y + p.height && turtleBox.y + turtleBox.height > p.y) {
       loseSound.play();
       bgMusic.pause();
-      showEndScreen("Game Over : tu as touché un déchet !");
+      const finalScore = Math.floor((scrollX + tortue.x) / 10) + oeufsRecoltes * 10;
+      overlayMessage.textContent = `Game Over : tu as touché un déchet !\nScore final : ${finalScore}`;
+      const startBtn = document.getElementById("startButton");
+      if (startBtn) startBtn.textContent = "Rejouer";
+      overlay.style.display = "flex";
       gameOver = true;
     }
   }
 }
-
-function drawGoal() {
-  const goalX = levelLength - scrollX;
-  if (goalX >= 0 && goalX <= canvas.width) {
-    ctx.drawImage(oeufsImg, goalX - 50, 160, 40, 40);
-  }
+function drawOeufs() {
+  oeufs.forEach(egg => {
+    const ex = egg.x - scrollX;
+    if (ex >= -40 && ex <= canvas.width) {
+      ctx.drawImage(oeufsImg, ex, egg.y, egg.width, egg.height);
+    }
+  });
 }
-
-function checkWin() {
-  if (!hasWon && scrollX + tortue.x + tortue.width >= levelLength) {
-    hasWon = true;
-    winSound.play();
-    bgMusic.pause();
-    showEndScreen("Bravo ! Tu as atteint les œufs !");
-  }
+function checkEggCollision() {
+  const turtleBox = {
+    x: tortue.x + tortue.hitboxOffset,
+    y: tortue.y + tortue.hitboxOffset,
+    width: tortue.width - 2 * tortue.hitboxOffset,
+    height: tortue.height - 2 * tortue.hitboxOffset
+  };
+  oeufs.forEach((egg, i) => {
+    const ex = egg.x - scrollX;
+    if (turtleBox.x < ex + egg.width && turtleBox.x + turtleBox.width > ex && turtleBox.y < egg.y + egg.height && turtleBox.y + turtleBox.height > egg.y) {
+      winSound.play();
+      oeufsRecoltes++;
+      oeufs.splice(i, 1);
+    }
+  });
 }
-
 function updateScore() {
-  const metres = Math.min(levelLength, scrollX + tortue.x);
-  scoreDisplay.textContent = Math.floor(metres / 10);
+  const metres = scrollX + tortue.x;
+  scoreDisplay.textContent = Math.floor(metres / 10) + oeufsRecoltes * 10;
 }
-
-function showEndScreen(message) {
-  overlayMessage.textContent = message;
-  overlay.style.display = "flex";
-}
-
 function draw() {
-  if (gameOver || hasWon) return;
+  if (gameOver) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
-  drawGoal();
+  drawOeufs();
   drawTortue();
   drawPlastiques();
   updatePlastiques();
   checkCollision();
-  checkWin();
+  checkEggCollision();
   updateScore();
-
   tortue.y += tortue.dy;
   tortue.y = Math.max(0, Math.min(canvas.height - tortue.height, tortue.y));
   scrollX += tortue.speed;
   frame++;
   requestAnimationFrame(draw);
 }
-
-// Responsive canvas
 function resizeCanvas() {
   const ratio = 3 / 2;
   const maxWidth = window.innerWidth * 0.95;
@@ -338,7 +343,7 @@ let assetsLoaded = 0;
 assets.forEach(img => img.onload = () => {
   assetsLoaded++;
   if (assetsLoaded === assets.length) {
-    requestAnimationFrame(draw);
+    overlay.style.display = "flex"; // Affiche l'écran de démarrage
   }
 });
 </script>
