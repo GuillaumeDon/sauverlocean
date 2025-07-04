@@ -43,7 +43,6 @@
       z-index: 5;
     }
 
-    /* ✅ Overlay non bloquant */
     #overlay {
       position: fixed;
       top: 0; left: 0;
@@ -55,10 +54,10 @@
       justify-content: center;
       align-items: center;
       z-index: 10;
-      pointer-events: none; /* n'intercepte pas les clics */
+      pointer-events: none;
     }
     #overlay * {
-      pointer-events: auto; /* sauf pour les éléments internes */
+      pointer-events: auto;
     }
 
     #overlay h2 { margin-bottom: 20px; }
@@ -115,7 +114,6 @@
 <div id="hud">Distance : <span id="score">0</span> m</div>
 <button onclick="toggleMusic()" style="margin-top:10px;">🔇 Couper la musique</button>
 
-<!-- ✅ Overlay de démarrage -->
 <div id="overlay">
   <h2 id="overlayMessage">Prêt à jouer ?</h2>
   <button id="startButton" onclick="startGame()">Jouer</button>
@@ -169,13 +167,7 @@ let score = 0;
 let oeufsRecoltes = 0;
 const levelLength = 6000;
 let plastiques = [];
-let oeufs = [
-  { x: 1000, y: 160, width: 40, height: 40 },
-  { x: 2000, y: 120, width: 40, height: 40 },
-  { x: 3000, y: 200, width: 40, height: 40 },
-  { x: 4000, y: 150, width: 40, height: 40 },
-  { x: 5000, y: 180, width: 40, height: 40 }
-];
+let oeufs = [];
 
 function toggleMusic() {
   if (bgMusic.paused) {
@@ -186,18 +178,18 @@ function toggleMusic() {
 }
 
 function startGame() {
-  if (!gameStarted) {
-    overlay.style.display = "none";
-    bgMusic.currentTime = 0;
-    bgMusic.play();
-    gameStarted = true;
-    requestAnimationFrame(draw);
-  }
+  resetGame(); // Corrigé ici
+  overlay.style.display = "none";
+  bgMusic.currentTime = 0;
+  bgMusic.play();
+  gameStarted = true;
+  requestAnimationFrame(draw);
 }
 
 function resetGame() {
   scrollX = 0;
   gameOver = false;
+  gameStarted = false; // Ajouté ici
   frame = 0;
   score = 0;
   oeufsRecoltes = 0;
@@ -343,9 +335,10 @@ let assetsLoaded = 0;
 assets.forEach(img => img.onload = () => {
   assetsLoaded++;
   if (assetsLoaded === assets.length) {
-    overlay.style.display = "flex"; // Affiche l'écran de démarrage
+    overlay.style.display = "flex";
   }
 });
 </script>
+
 </body>
 </html>
