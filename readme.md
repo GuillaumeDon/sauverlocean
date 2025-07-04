@@ -12,10 +12,7 @@ Le site web du projet est accessible à l’adresse suivante :
 
 Ce site présente ma démarche, les enjeux de la préservation des océans, ainsi que les solutions proposées.
 
-## 🎥 Démonstration & Présentation
-
-- 📽️ **Vidéo de démonstration** 
-- 📊 **PowerPoint de présentation** 
+ 
 
 ## 🛠️ Contenu du dépôt
 
@@ -23,6 +20,7 @@ Les fichiers du site web
 La démonstration en vidéo
 Le powerpoint de présentation
 Un fichier texte avec les liens du dépôts GitHub et du site web
+La musique Tortue vs Plastique généré via l'IA Suno
 
 ## 🤝 Crédits
 
