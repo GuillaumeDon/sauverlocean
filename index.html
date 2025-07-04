@@ -9,6 +9,7 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom, #001f3f, #00557a);
       color: white;
+      overflow-x: hidden;
     }
     header {
       background-color: #001f3f;
@@ -21,15 +22,35 @@
     header h1 {
       margin: 0;
       font-size: 24px;
+      background: linear-gradient(90deg, #00d4ff, #00ff95);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 4s linear infinite;
+    }
+    @keyframes shine {
+      0% { filter: brightness(1); }
+      50% { filter: brightness(1.5); }
+      100% { filter: brightness(1); }
     }
     nav a {
       color: white;
       text-decoration: none;
       margin-left: 20px;
       font-weight: bold;
+      position: relative;
     }
-    nav a:hover {
-      text-decoration: underline;
+    nav a::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 2px;
+      left: 0;
+      bottom: -4px;
+      background-color: white;
+      transition: width 0.3s ease;
+    }
+    nav a:hover::after {
+      width: 100%;
     }
     h2 {
       text-align: center;
@@ -43,6 +64,16 @@
       align-items: center;
       gap: 20px;
       margin-top: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1s ease-out forwards;
+      animation-delay: 0.5s;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     .menu a {
       padding: 15px 30px;
@@ -51,10 +82,13 @@
       text-decoration: none;
       border-radius: 8px;
       font-size: 20px;
-      transition: background 0.3s;
+      transition: all 0.3s;
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0);
     }
     .menu a:hover {
       background-color: #0096c7;
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
     footer {
       margin-top: 60px;
@@ -64,13 +98,39 @@
       text-align: center;
       font-size: 14px;
     }
+    /* Bulles animées */
+    .bubbles {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .bubbles span {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: rgba(255,255,255,0.1);
+      bottom: -50px;
+      border-radius: 50%;
+      animation: rise 10s infinite ease-in;
+    }
+    @keyframes rise {
+      0% { transform: translateY(0) scale(0.5); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>Protection de la biodiversité marine</h1>
     <nav>
-      
+      <a href="index.html">🏠 Accueil</a>
       <a href="jeu.html">🎮 Jeu</a>
       <a href="quizz.html">🧠 Quiz</a>
       <a href="cartes.html">🎴 Cartes</a>
@@ -82,6 +142,15 @@
     <a href="jeu.html">🎮 Jouer au mini-jeu</a>
     <a href="quizz.html">🧠 Faire le quiz</a>
     <a href="cartes.html">🎴 Explorer les cartes océanes</a>
+  </div>
+
+  <div class="bubbles">
+    <span style="left: 10%; animation-delay: 0s;"></span>
+    <span style="left: 25%; animation-delay: 2s;"></span>
+    <span style="left: 40%; animation-delay: 4s;"></span>
+    <span style="left: 60%; animation-delay: 1s;"></span>
+    <span style="left: 75%; animation-delay: 3s;"></span>
+    <span style="left: 90%; animation-delay: 5s;"></span>
   </div>
 
   <footer>
