@@ -132,7 +132,7 @@
   </nav>
 </header>
 
-<div id="instructions">Utilise ↑ ou ↓ pour déplacer la tortue ou les boutons ci-dessous sur mobile</div>
+<div id="instructions">Utilise ↑ ou ↓ pour déplacer la tortue ou utilise les boutons ci-dessous</div>
 <div id="hud">Distance : <span id="score">0</span> m</div>
 <div id="overlay">
   <h2 id="overlayMessage"></h2>
@@ -214,11 +214,11 @@ document.addEventListener("keyup", e => {
   }
 });
 
-// Tactile
+// Contrôles tactiles (précis)
 function startMove(dir) {
-  tortue.dy = dir === "up" ? -4 : 4;
+  tortue.dy = dir === "up" ? -2 : 2;
   swimSound.play();
-  setTimeout(() => tortue.dy = 0, 300); // Court déplacement
+  setTimeout(() => tortue.dy = 0, 200);
 }
 
 function drawBackground() {
@@ -320,9 +320,9 @@ function draw() {
   requestAnimationFrame(draw);
 }
 
-// Resize canvas to fit screen while keeping aspect ratio
+// Responsive canvas
 function resizeCanvas() {
-  const ratio = 3 / 2; // width:height
+  const ratio = 3 / 2;
   const maxWidth = window.innerWidth * 0.95;
   const width = Math.min(maxWidth, 600);
   canvas.width = width;
